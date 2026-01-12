@@ -1,0 +1,484 @@
+/* EnvelopeAnimation.module.css - FIXED VERSION */
+
+.envelopeContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #ffdac1 0%, #ffb7b2 50%, #ff9aa2 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  animation: fadeBackground 3.5s ease-in-out forwards;
+}
+
+@keyframes fadeBackground {
+  0% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+.envelopeWrapper {
+  position: relative;
+  width: 400px;
+  height: 280px;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+/* Envelope Back - Bottom layer */
+.envelopeBack {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #f5f5f5 0%, #fff9f5 100%);
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  z-index: 1;
+  border: 2px solid #e8e8e8;
+}
+
+/* Envelope Front - Covers the letter initially */
+.envelopeFront {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #ffffff 0%, #fff9f5 100%);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15),
+    inset 0 -2px 5px rgba(0, 0, 0, 0.05);
+  z-index: 3;
+  clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
+  border: 2px solid #e8e8e8;
+  border-bottom: none;
+}
+
+/* Add envelope fold lines for realism */
+.envelopeFront::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70%;
+  background: linear-gradient(
+    to bottom right,
+    transparent 49.5%,
+    rgba(0, 0, 0, 0.03) 49.5%,
+    rgba(0, 0, 0, 0.03) 50.5%,
+    transparent 50.5%
+  );
+}
+
+.envelopeFront::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 70%;
+  background: linear-gradient(
+    to bottom left,
+    transparent 49.5%,
+    rgba(0, 0, 0, 0.03) 49.5%,
+    rgba(0, 0, 0, 0.03) 50.5%,
+    transparent 50.5%
+  );
+}
+
+/* Envelope Flap */
+.envelopeFlap {
+  position: absolute;
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(135deg, #ffdac1 0%, #ffcad4 100%);
+  border-radius: 8px 8px 0 0;
+  transform-origin: top center;
+  transform: rotateX(0deg);
+  transition: transform 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: 4;
+  clip-path: polygon(0 0, 100% 0, 50% 50%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2),
+    inset 0 -3px 8px rgba(0, 0, 0, 0.1);
+  border: 2px solid #ffc4cc;
+  border-bottom: none;
+}
+
+.envelopeFlap.open {
+  transform: rotateX(-180deg);
+}
+
+/* Wax seal on flap */
+.flapSeal {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 50px;
+  background: radial-gradient(circle, #ff9aa2 0%, #ff8a95 100%);
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(255, 154, 162, 0.4),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+  animation: pulse 1.5s ease-in-out infinite;
+  border: 3px solid #ff7a85;
+}
+
+.sealInner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(135deg, #ffc1c8 0%, #ffb3bc 100%);
+  border-radius: 50%;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* Add embossed heart pattern to seal */
+.sealInner::before {
+  content: "♥";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  color: rgba(255, 154, 162, 0.4);
+  font-weight: bold;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    transform: translateX(-50%) scale(1.05);
+  }
+}
+
+/* Letter - Hidden initially, only shows when rising */
+.letter {
+  position: absolute;
+  width: 90%;
+  height: 85%;
+  left: 5%;
+  top: 15%;
+  background: linear-gradient(135deg, #ffffff 0%, #fffcf9 100%);
+  border-radius: 8px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+  z-index: 2;
+  transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transform: translateY(0) scale(1);
+  opacity: 0;
+  visibility: hidden;
+  border: 1px solid #f0f0f0;
+}
+
+/* Only show letter when it starts rising */
+.letter.rising {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-120px) scale(1.05);
+  z-index: 5;
+}
+
+.letter.expanding {
+  transform: translateY(-50vh) scale(3.5);
+  opacity: 0;
+}
+
+.letterContent {
+  padding: 40px 30px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+
+.letterHeader {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+/* CSS Flower decoration */
+.flowerDecor {
+  width: 30px;
+  height: 30px;
+  position: relative;
+  animation: rotate 4s linear infinite;
+}
+
+.flowerDecor::before,
+.flowerDecor::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #ff9aa2;
+  border-radius: 50%;
+}
+
+.flowerDecor::before {
+  top: 0;
+  left: 9px;
+  box-shadow: -9px 9px 0 #ffb7b2, 9px 9px 0 #ffdac1, -9px -9px 0 #b5ead7,
+    9px -9px 0 #c7ceea;
+}
+
+.flowerDecor::after {
+  top: 9px;
+  left: 9px;
+  background: #fff9f5;
+  width: 10px;
+  height: 10px;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.coupleNames {
+  font-family: var(--font-playfair), "Playfair Display", serif;
+  font-size: 2rem;
+  color: #ff9aa2;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.letterSubtext {
+  font-size: 1.3rem;
+  color: #5c5c5c;
+  margin: 15px 0;
+  font-weight: 300;
+  letter-spacing: 1px;
+}
+
+.letterDate {
+  font-size: 1.1rem;
+  color: #b5ead7;
+  font-style: italic;
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+/* CSS Heart shapes */
+.floatingHearts {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.heart {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  animation: floatUp 6s ease-in infinite;
+  opacity: 0;
+}
+
+.heart::before,
+.heart::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 32px;
+  background: #ff9aa2;
+  border-radius: 20px 20px 0 0;
+}
+
+.heart::before {
+  left: 20px;
+  transform: rotate(-45deg);
+  transform-origin: 0 100%;
+}
+
+.heart::after {
+  left: 0;
+  transform: rotate(45deg);
+  transform-origin: 100% 100%;
+}
+
+.heart:nth-child(1) {
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.heart:nth-child(2) {
+  left: 30%;
+  animation-delay: 1.5s;
+}
+
+.heart:nth-child(3) {
+  right: 30%;
+  animation-delay: 3s;
+}
+
+.heart:nth-child(4) {
+  right: 10%;
+  animation-delay: 4.5s;
+}
+
+@keyframes floatUp {
+  0% {
+    bottom: -10%;
+    opacity: 0;
+    transform: translateX(0) rotate(0deg);
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    bottom: 110%;
+    opacity: 0;
+    transform: translateX(20px) rotate(360deg);
+  }
+}
+
+/* CSS Sparkles */
+.sparkles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.sparkle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  animation: sparkleAnimation 2s ease-in-out infinite;
+}
+
+.sparkle::before,
+.sparkle::after {
+  content: "";
+  position: absolute;
+  background: #fff;
+  box-shadow: 0 0 10px #fff, 0 0 20px #ffdac1;
+}
+
+.sparkle::before {
+  width: 10px;
+  height: 2px;
+  top: 4px;
+  left: 0;
+}
+
+.sparkle::after {
+  width: 2px;
+  height: 10px;
+  top: 0;
+  left: 4px;
+}
+
+.sparkle:nth-child(1) {
+  top: 15%;
+  left: 15%;
+  animation-delay: 0s;
+}
+
+.sparkle:nth-child(2) {
+  top: 20%;
+  right: 20%;
+  animation-delay: 0.3s;
+}
+
+.sparkle:nth-child(3) {
+  bottom: 25%;
+  left: 10%;
+  animation-delay: 0.6s;
+}
+
+.sparkle:nth-child(4) {
+  bottom: 20%;
+  right: 15%;
+  animation-delay: 0.9s;
+}
+
+.sparkle:nth-child(5) {
+  top: 50%;
+  left: 5%;
+  animation-delay: 1.2s;
+}
+
+.sparkle:nth-child(6) {
+  top: 45%;
+  right: 8%;
+  animation-delay: 1.5s;
+}
+
+@keyframes sparkleAnimation {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(180deg);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .envelopeWrapper {
+    width: 320px;
+    height: 220px;
+  }
+
+  .coupleNames {
+    font-size: 1.6rem;
+  }
+
+  .letterSubtext {
+    font-size: 1.1rem;
+  }
+
+  .letterDate {
+    font-size: 0.95rem;
+  }
+
+  .letter.expanding {
+    transform: translateY(-40vh) scale(2.5);
+  }
+
+  .flapSeal {
+    width: 40px;
+    height: 40px;
+  }
+
+  .sealInner {
+    width: 24px;
+    height: 24px;
+  }
+
+  .sealInner::before {
+    font-size: 14px;
+  }
+}

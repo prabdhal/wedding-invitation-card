@@ -1,6 +1,6 @@
 "use client";
 import { useState, FormEvent, ChangeEvent, useEffect, useRef } from "react";
-import styles from "./RSVPForm.module.css"; // Import CSS module
+import styles from "./RSVPForm.module.css";
 
 interface RSVPFormData {
   name: string;
@@ -46,6 +46,7 @@ export default function RSVPForm({ onBack, onSubmitSuccess }: RSVPFormProps) {
   const [charCount, setCharCount] = useState(0);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const [isAttending, setIsAttending] = useState(true);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -147,6 +148,7 @@ export default function RSVPForm({ onBack, onSubmitSuccess }: RSVPFormProps) {
   };
 
   const showModal = (attending: "yes" | "no") => {
+    setIsAttending(attending === "yes");
     if (attending === "yes") {
       setModalMessage(
         "Thank you for confirming your attendance! We are excited to celebrate with you at our wedding reception!"
@@ -245,11 +247,14 @@ export default function RSVPForm({ onBack, onSubmitSuccess }: RSVPFormProps) {
       {showSuccessModal && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent} ref={modalRef}>
-            <div className={styles.modalIcon}>
-              {formData.attending === "yes" ? "🎉" : "💌"}
-            </div>
+            {/* Use CSS class for icon instead of emoji */}
+            <div
+              className={`${styles.modalIcon} ${
+                !isAttending ? styles.modalIconSad : ""
+              }`}
+            ></div>
             <h3 className={styles.modalTitle}>
-              {formData.attending === "yes" ? "Thank You!" : "We'll Miss You"}
+              {isAttending ? "Thank You!" : "We'll Miss You"}
             </h3>
             <p className={styles.modalMessage}>{modalMessage}</p>
             <button onClick={handleReturnHome} className={styles.modalButton}>
