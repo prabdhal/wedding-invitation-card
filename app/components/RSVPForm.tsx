@@ -147,15 +147,20 @@ export default function RSVPForm({ onBack, onSubmitSuccess }: RSVPFormProps) {
     }));
   };
 
-  const showModal = (attending: "yes" | "no") => {
+  const showModal = (attending: "yes" | "no", wasUpdated: boolean = false) => {
     setIsAttending(attending === "yes");
+
     if (attending === "yes") {
       setModalMessage(
-        "Thank you for confirming your attendance! We are excited to celebrate with you at our wedding reception!"
+        wasUpdated
+          ? "Thank you for updating your RSVP! Your attendance details have been updated and we look forward to celebrating with you at our wedding reception!"
+          : "Thank you for confirming your attendance! We are excited to celebrate with you at our wedding reception!"
       );
     } else {
       setModalMessage(
-        "We're sad to hear you can't make it, but we understand. If your plans change, you can always update your RSVP status on our website."
+        wasUpdated
+          ? "We've updated your RSVP. We're sad to hear you can't make it, but we understand. If your plans change again, you can always update your RSVP status on our website."
+          : "We're sad to hear you can't make it, but we understand. If your plans change, you can always update your RSVP status on our website."
       );
     }
     setShowSuccessModal(true);
@@ -221,7 +226,7 @@ export default function RSVPForm({ onBack, onSubmitSuccess }: RSVPFormProps) {
       setHasSelectedFromDropdown(false);
       setCharCount(0);
 
-      showModal(formData.attending);
+      showModal(formData.attending, data.updated === true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
       console.error("Error:", err);

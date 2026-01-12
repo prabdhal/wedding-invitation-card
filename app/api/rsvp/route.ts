@@ -84,13 +84,30 @@ export async function POST(request: NextRequest) {
       throw new Error("Failed to save to Google Sheets");
     }
 
-    console.log("✅ RSVP saved to Google Sheets successfully!");
+    // Try to parse the response to check if it was an update
+    let wasUpdated = false;
+    try {
+      const responseData = await response.text();
+      const parsed = JSON.parse(responseData);
+      wasUpdated = parsed.updated === true;
+    } catch (e) {
+      // If parsing fails, that's okay, just assume it was successful
+      console.log("Could not parse response, assuming success");
+    }
+
+    console.log(
+      wasUpdated
+        ? "✅ RSVP updated in Google Sheets!"
+        : "✅ RSVP saved to Google Sheets!"
+    );
 
     return NextResponse.json({
       success: true,
-      message: "RSVP saved successfully",
+      message: wasUpdated
+        ? "RSVP updated successfully"
+        : "RSVP saved successfully",
       id: Date.now().toString(),
-      updated: false,
+      updated: wasUpdated,
     });
   } catch (error) {
     console.error("❌ Error saving RSVP:", error);
