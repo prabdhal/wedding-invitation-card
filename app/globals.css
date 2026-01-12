@@ -1,26 +1,147 @@
-@import "tailwindcss";
+/* globals.css */
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Summer Pastel Color Palette */
+  --primary-color: #ff9aa2; /* Soft coral pink */
+  --secondary-color: #ffdac1; /* Peach */
+  --accent-color: #c7ceea; /* Mint green */
+  --highlight-color: #c7ceea; /* Lavender blue */
+  --text-color: #5c5c5c; /* Soft charcoal */
+  --light-color: #fff9f5; /* Cream white */
+  --success-color: #a8e6cf; /* Pastel green */
+  --error-color: #ffb7b2; /* Pastel red */
+  --shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  --border-radius: 20px;
+  --gradient-primary: linear-gradient(135deg, #ff9aa2 0%, #ffb7b2 100%);
+  --gradient-secondary: linear-gradient(135deg, #b5ead7 0%, #c7ceea 100%);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, sans-serif;
+  line-height: 1.6;
+  color: var(--text-color);
+  background: linear-gradient(135deg, var(--secondary-color) 0%, #ffffff 100%);
+  min-height: 100vh;
+}
+
+/* Floating animations for summer feel */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Animation for dropdown */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation for success messages */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Print styles */
+@media print {
+  .rsvp-button,
+  .back-button,
+  .admin-link,
+  .share-buttons {
+    display: none !important;
+  }
+
+  .qr-code {
+    border: 2px solid #000;
+  }
+
+  body {
+    background: white !important;
+  }
+
+  .container {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hero-section h1 {
+    font-size: 2.8rem;
+  }
+
+  .hero-section h2 {
+    font-size: 1.8rem;
+  }
+
+  .container {
+    padding: 30px;
+  }
+
+  .details-card,
+  .qr-section {
+    padding: 30px;
+  }
+
+  .rsvp-form {
+    padding: 35px;
+  }
+
+  .admin-header {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+
+  .admin-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .radio-group {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .radio-label {
+    min-width: auto;
+  }
+
+  .main-content {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .additional-info {
+    grid-template-columns: 1fr;
+  }
 }

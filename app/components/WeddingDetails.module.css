@@ -1,0 +1,97 @@
+/* WeddingDetails.module.css */
+
+/* Wedding Details Card */
+.detailsCard {
+  background: linear-gradient(135deg, var(--light-color) 0%, #ffffff 100%);
+  padding: 40px;
+  border-radius: var(--border-radius);
+  border-left: 6px solid var(--accent-color);
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  animation: float 6s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+.detailsCard::before {
+  content: "🌺";
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  font-size: 50px;
+  color: rgba(181, 234, 215, 0.2);
+}
+
+.detailsCard::after {
+  content: "🌷";
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  font-size: 25px;
+  color: rgba(255, 154, 162, 0.3);
+  animation: float 4s ease-in-out infinite;
+}
+
+.detailsCard h3 {
+  color: var(--primary-color);
+  margin-bottom: 25px;
+  font-size: 2rem;
+  font-family: var(--font-playfair), "Playfair Display", serif;
+  position: relative;
+}
+
+.detailsCard h3::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: var(--accent-color);
+}
+
+.detailsCard p {
+  margin: 15px 0;
+  color: var(--text-color);
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+.detailsCard strong {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.schedule {
+  margin-top: 30px;
+  padding-top: 30px;
+  border-top: 2px dashed var(--highlight-color);
+}
+
+.schedule h4 {
+  color: var(--primary-color);
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  font-family: var(--font-playfair), "Playfair Display", serif;
+}
+
+.schedule ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.schedule li {
+  margin: 12px 0;
+  padding-left: 35px;
+  position: relative;
+  font-size: 1.1rem;
+  color: var(--text-color);
+}
+
+.schedule li::before {
+  content: "✨";
+  position: absolute;
+  left: 0;
+  color: var(--accent-color);
+  font-size: 1.2rem;
+}
