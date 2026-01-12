@@ -10,6 +10,9 @@ const playfair = Playfair_Display({
 export const metadata = {
   title: "Prabdeep & Saebyeol - Wedding RSVP",
   description: "Wedding invitation and RSVP website",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
