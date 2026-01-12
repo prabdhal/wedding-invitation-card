@@ -12,6 +12,7 @@ interface RSVPFormData {
   ip?: string;
 }
 
+// TEMPORARY - just to test
 const GOOGLE_SHEETS_URL = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
 
 export async function GET() {
@@ -68,8 +69,6 @@ export async function POST(request: NextRequest) {
       ip: ip,
     };
 
-    console.log("📤 Sending RSVP to Google Sheets...");
-
     // Send to Google Sheets
     const response = await fetch(GOOGLE_SHEETS_URL, {
       method: "POST",
@@ -89,17 +88,11 @@ export async function POST(request: NextRequest) {
     try {
       const responseData = await response.text();
       const parsed = JSON.parse(responseData);
+
       wasUpdated = parsed.updated === true;
     } catch (e) {
-      // If parsing fails, that's okay, just assume it was successful
       console.log("Could not parse response, assuming success");
     }
-
-    console.log(
-      wasUpdated
-        ? "✅ RSVP updated in Google Sheets!"
-        : "✅ RSVP saved to Google Sheets!"
-    );
 
     return NextResponse.json({
       success: true,
