@@ -1,6 +1,5 @@
+// app/api/rsvp/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
 
 interface RSVPFormData {
   id?: string;
@@ -9,43 +8,23 @@ interface RSVPFormData {
   guests: number;
   message: string;
   timestamp?: string;
-  updated?: string; // Add this field
+  updated?: string;
   ip?: string;
 }
 
-const DATA_FILE = path.join(process.cwd(), "data", "rsvps.json");
-const dataDir = path.join(process.cwd(), "data");
-
-// Initialize data directory and file
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
-}
-
-if (!fs.existsSync(DATA_FILE)) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify([]));
-}
+// Google Sheets API endpoint
+const GOOGLE_SHEETS_URL = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
 
 export async function GET() {
   try {
-    const data = fs.readFileSync(DATA_FILE, "utf8");
-    const rsvps: RSVPFormData[] = JSON.parse(data);
-
-    const attending = rsvps.filter((r) => r.attending === "yes");
-    const totalGuests = attending.reduce(
-      (sum, rsvp) => sum + (rsvp.guests || 0),
-      0
-    );
-
-    const summary = {
-      total: rsvps.length,
-      attending: attending.length,
-      declined: rsvps.length - attending.length,
-      totalGuests,
-    };
-
-    return NextResponse.json({ rsvps, summary });
+    // For now, return a message that data is stored in Google Sheets
+    // You can implement fetching from Sheets if needed
+    return NextResponse.json({
+      message: "RSVPs are stored in Google Sheets",
+      note: "Access your Google Sheet to view all RSVPs",
+    });
   } catch (error) {
-    console.error("Error fetching RSVPs:", error);
+    console.error("Error:", error);
     return NextResponse.json(
       { error: "Failed to fetch RSVPs" },
       { status: 500 }
@@ -71,47 +50,33 @@ export async function POST(request: NextRequest) {
     const timestamp = new Date().toISOString();
     const ip = request.headers.get("x-forwarded-for") || "unknown";
 
-    // Read existing data
-    const existingData = fs.readFileSync(DATA_FILE, "utf8");
-    const rsvps: RSVPFormData[] = JSON.parse(existingData);
-
-    // Check if RSVP already exists for this name
-    const existingIndex = rsvps.findIndex(
-      (rsvp) => rsvp.name.toLowerCase() === body.name.toLowerCase().trim()
-    );
-
-    const newRsvp: RSVPFormData = {
-      id:
-        existingIndex !== -1 ? rsvps[existingIndex].id : Date.now().toString(),
+    const rsvpData = {
       name: body.name.trim(),
       attending: body.attending,
       guests: body.attending === "yes" ? body.guests || 1 : 0,
       message: body.message?.trim() || "",
-      timestamp:
-        existingIndex !== -1 ? rsvps[existingIndex].timestamp : timestamp,
-      updated: timestamp, // Now this is allowed
-      ip: existingIndex !== -1 ? rsvps[existingIndex].ip : ip,
+      timestamp: timestamp,
+      ip: ip,
     };
 
-    if (existingIndex !== -1) {
-      // Update existing RSVP
-      rsvps[existingIndex] = newRsvp;
+    // Send to Google Sheets
+    if (GOOGLE_SHEETS_URL) {
+      await fetch(GOOGLE_SHEETS_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(rsvpData),
+      });
     } else {
-      // Add new RSVP
-      rsvps.push(newRsvp);
+      console.warn("Google Sheets webhook URL not configured");
     }
-
-    // Save to file
-    fs.writeFileSync(DATA_FILE, JSON.stringify(rsvps, null, 2));
 
     return NextResponse.json({
       success: true,
-      message:
-        existingIndex !== -1
-          ? "RSVP updated successfully"
-          : "RSVP saved successfully",
-      id: newRsvp.id,
-      updated: existingIndex !== -1,
+      message: "RSVP saved successfully",
+      id: Date.now().toString(),
+      updated: false,
     });
   } catch (error) {
     console.error("Error saving RSVP:", error);
