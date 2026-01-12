@@ -2,6 +2,7 @@
 import { useState } from "react";
 import WeddingDetails from "./components/WeddingDetails";
 import RSVPForm from "./components/RSVPForm";
+import ConfettiEffect from "./components/ConfettiEffect";
 import styles from "./Home.module.css";
 import "./globals.css";
 
@@ -25,6 +26,8 @@ export default function Home() {
 
   return (
     <div className={styles.app}>
+      <ConfettiEffect trigger={rsvpSubmitted} />
+
       <header className={styles.heroSection}>
         <h1>Prabdeep & Saebyeol</h1>
         <h2>Are Getting Married!</h2>
