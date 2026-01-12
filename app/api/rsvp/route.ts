@@ -12,13 +12,10 @@ interface RSVPFormData {
   ip?: string;
 }
 
-// Google Sheets API endpoint
 const GOOGLE_SHEETS_URL = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
 
 export async function GET() {
   try {
-    // For now, return a message that data is stored in Google Sheets
-    // You can implement fetching from Sheets if needed
     return NextResponse.json({
       message: "RSVPs are stored in Google Sheets",
       note: "Access your Google Sheet to view all RSVPs",
@@ -47,6 +44,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check if webhook URL is configured
+    if (!GOOGLE_SHEETS_URL) {
+      console.error("❌ GOOGLE_SHEETS_WEBHOOK_URL not configured!");
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Server configuration error. Please contact support.",
+        },
+        { status: 500 }
+      );
+    }
+
     const timestamp = new Date().toISOString();
     const ip = request.headers.get("x-forwarded-for") || "unknown";
 
@@ -59,18 +68,23 @@ export async function POST(request: NextRequest) {
       ip: ip,
     };
 
+    console.log("📤 Sending RSVP to Google Sheets...");
+
     // Send to Google Sheets
-    if (GOOGLE_SHEETS_URL) {
-      await fetch(GOOGLE_SHEETS_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(rsvpData),
-      });
-    } else {
-      console.warn("Google Sheets webhook URL not configured");
+    const response = await fetch(GOOGLE_SHEETS_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(rsvpData),
+    });
+
+    if (!response.ok) {
+      console.error("❌ Google Sheets webhook failed:", response.status);
+      throw new Error("Failed to save to Google Sheets");
     }
+
+    console.log("✅ RSVP saved to Google Sheets successfully!");
 
     return NextResponse.json({
       success: true,
@@ -79,7 +93,7 @@ export async function POST(request: NextRequest) {
       updated: false,
     });
   } catch (error) {
-    console.error("Error saving RSVP:", error);
+    console.error("❌ Error saving RSVP:", error);
     return NextResponse.json(
       { success: false, error: "Failed to save RSVP" },
       { status: 500 }

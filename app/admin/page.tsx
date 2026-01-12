@@ -1,16 +1,11 @@
 "use client";
-import { useState, useEffect, FormEvent } from "react";
-import { RSVPFormData, RSVPSummary } from "@/types";
+import { useState, FormEvent } from "react";
 import styles from "./AdminPage.module.css";
 
 export default function AdminPage() {
-  const [rsvps, setRsvps] = useState<RSVPFormData[]>([]);
-  const [summary, setSummary] = useState<RSVPSummary | null>(null);
-  const [loading, setLoading] = useState(true);
   const [password, setPassword] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
 
-  // In production, use environment variables
   const ADMIN_PASSWORD =
     process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "wedding2024";
 
@@ -21,65 +16,6 @@ export default function AdminPage() {
     } else {
       alert("Incorrect password");
     }
-  };
-
-  useEffect(() => {
-    if (authenticated) {
-      fetchRSVPs();
-    }
-  }, [authenticated]);
-
-  const fetchRSVPs = async () => {
-    try {
-      const response = await fetch("/api/rsvp");
-      if (!response.ok) throw new Error("Failed to fetch RSVPs");
-
-      const data = await response.json();
-      setRsvps(data.rsvps);
-      setSummary(data.summary);
-    } catch (error) {
-      console.error("Error fetching RSVPs:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const exportToCSV = () => {
-    const headers = [
-      "Name",
-      "Attending",
-      "Guests",
-      "Message",
-      "Date",
-      "Updated",
-    ];
-    const csvRows = [
-      headers.join(","),
-      ...rsvps.map((rsvp) =>
-        [
-          `"${rsvp.name?.replace(/"/g, '""')}"`,
-          `"${rsvp.attending}"`,
-          rsvp.guests,
-          `"${rsvp.message?.replace(/"/g, '""')}"`,
-          `"${
-            rsvp.timestamp ? new Date(rsvp.timestamp).toLocaleDateString() : ""
-          }"`,
-          `"${
-            rsvp.updated ? new Date(rsvp.updated).toLocaleDateString() : ""
-          }"`,
-        ].join(",")
-      ),
-    ];
-
-    const csvString = csvRows.join("\n");
-    const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", "wedding-rsvps.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   };
 
   if (!authenticated) {
@@ -107,12 +43,6 @@ export default function AdminPage() {
       <div className={styles.adminHeader}>
         <h1>Wedding RSVP Dashboard</h1>
         <div className={styles.adminActions}>
-          <button onClick={fetchRSVPs} className={styles.refreshBtn}>
-            Refresh
-          </button>
-          <button onClick={exportToCSV} className={styles.exportBtn}>
-            Export to CSV
-          </button>
           <button
             onClick={() => setAuthenticated(false)}
             className={styles.logoutBtn}
@@ -122,77 +52,67 @@ export default function AdminPage() {
         </div>
       </div>
 
-      {summary && (
-        <div className={styles.summaryCards}>
-          <div className={styles.summaryCard}>
-            <h3>Total RSVPs</h3>
-            <p className={styles.summaryNumber}>{summary.total}</p>
-          </div>
-          <div className={`${styles.summaryCard} ${styles.attending}`}>
-            <h3>Attending</h3>
-            <p className={styles.summaryNumber}>{summary.attending}</p>
-          </div>
-          <div className={`${styles.summaryCard} ${styles.declined}`}>
-            <h3>Declined</h3>
-            <p className={styles.summaryNumber}>{summary.declined}</p>
-          </div>
-          <div className={`${styles.summaryCard} ${styles.guests}`}>
-            <h3>Total Guests</h3>
-            <p className={styles.summaryNumber}>{summary.totalGuests}</p>
-          </div>
-        </div>
-      )}
+      <div className={styles.googleSheetsMessage}>
+        <div className={styles.messageCard}>
+          <h2>📊 Your RSVPs are in Google Sheets!</h2>
+          <p>
+            All RSVP responses are automatically saved to your Google Sheet in
+            real-time.
+          </p>
 
-      {loading ? (
-        <div className={styles.loading}>Loading RSVPs...</div>
-      ) : (
-        <div className={styles.rsvpList}>
-          <h2>All RSVPs ({rsvps.length})</h2>
-          <div className={styles.tableContainer}>
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Attending</th>
-                  <th>Guests</th>
-                  <th>Messages</th>
-                  <th>Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rsvps.map((rsvp) => (
-                  <tr key={rsvp.id}>
-                    <td>{rsvp.name}</td>
-                    <td>
-                      <span
-                        className={`${styles.status} ${styles[rsvp.attending]}`}
-                      >
-                        {rsvp.attending === "yes" ? "Attending" : "Declined"}
-                      </span>
-                    </td>
-                    <td>{rsvp.guests}</td>
-                    <td>{rsvp.message || "-"}</td>
-                    <td>
-                      {rsvp.timestamp
-                        ? new Date(rsvp.timestamp).toLocaleDateString()
-                        : "-"}
-                      {rsvp.updated && (
-                        <>
-                          <br />
-                          <small>
-                            Updated:{" "}
-                            {new Date(rsvp.updated).toLocaleDateString()}
-                          </small>
-                        </>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className={styles.instructions}>
+            <h3>To View Your RSVPs:</h3>
+            <ol>
+              <li>Open your Google Sheets</li>
+              <li>Find the "Wedding RSVPs" sheet</li>
+              <li>
+                View all responses with columns:
+                <ul>
+                  <li>Name</li>
+                  <li>Attending (yes/no)</li>
+                  <li>Number of Guests</li>
+                  <li>Message</li>
+                  <li>Timestamp</li>
+                  <li>IP Address</li>
+                </ul>
+              </li>
+            </ol>
+          </div>
+
+          <div className={styles.benefits}>
+            <h3>✨ Google Sheets Benefits:</h3>
+            <ul>
+              <li>📱 View on any device</li>
+              <li>👥 Share with family/wedding planner</li>
+              <li>🎨 Add custom columns (seating, dietary needs, etc.)</li>
+              <li>📊 Create charts and summaries</li>
+              <li>📥 Export to Excel/PDF</li>
+              <li>🔄 Real-time updates</li>
+            </ul>
+          </div>
+
+          <div className={styles.actionButtons}>
+            <a
+              href="https://sheets.google.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.primaryButton}
+            >
+              Open Google Sheets →
+            </a>
+          </div>
+
+          <div className={styles.helpSection}>
+            <p>
+              <strong>Can't find your sheet?</strong>
+            </p>
+            <p>
+              Look for the sheet you created when setting up the Google Apps
+              Script webhook.
+            </p>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
