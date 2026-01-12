@@ -48,15 +48,6 @@ export default function Home() {
                 </button>
               </div>
             </div>
-
-            {rsvpSubmitted && (
-              <div className={styles.thankYouBanner}>
-                <p>
-                  ✓ Thank you for your RSVP! We look forward to celebrating with
-                  you.
-                </p>
-              </div>
-            )}
           </>
         ) : (
           <RSVPForm
@@ -68,10 +59,6 @@ export default function Home() {
 
       <footer className={styles.footer}>
         <p>With love, Prabdeep & Saebyeol</p>
-
-        <a href="/admin" className={styles.adminLink}>
-          Admin Dashboard
-        </a>
       </footer>
     </div>
   );

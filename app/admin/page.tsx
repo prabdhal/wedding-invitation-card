@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, FormEvent } from "react";
 import { RSVPFormData, RSVPSummary } from "@/types";
-import styles from "./AdminPage.module.css"; // Import CSS module
+import styles from "./AdminPage.module.css";
 
 export default function AdminPage() {
   const [rsvps, setRsvps] = useState<RSVPFormData[]>([]);
@@ -47,27 +47,25 @@ export default function AdminPage() {
   const exportToCSV = () => {
     const headers = [
       "Name",
-      "Email",
-      "Phone",
       "Attending",
       "Guests",
-      "Dietary",
       "Message",
       "Date",
+      "Updated",
     ];
     const csvRows = [
       headers.join(","),
       ...rsvps.map((rsvp) =>
         [
           `"${rsvp.name?.replace(/"/g, '""')}"`,
-          `"${rsvp.email?.replace(/"/g, '""')}"`,
-          `"${rsvp.phone?.replace(/"/g, '""')}"`,
           `"${rsvp.attending}"`,
           rsvp.guests,
-          `"${rsvp.dietary?.replace(/"/g, '""')}"`,
           `"${rsvp.message?.replace(/"/g, '""')}"`,
           `"${
             rsvp.timestamp ? new Date(rsvp.timestamp).toLocaleDateString() : ""
+          }"`,
+          `"${
+            rsvp.updated ? new Date(rsvp.updated).toLocaleDateString() : ""
           }"`,
         ].join(",")
       ),
@@ -155,10 +153,9 @@ export default function AdminPage() {
               <thead>
                 <tr>
                   <th>Name</th>
-                  <th>Email</th>
                   <th>Attending</th>
                   <th>Guests</th>
-                  <th>Dietary</th>
+                  <th>Messages</th>
                   <th>Date</th>
                 </tr>
               </thead>
@@ -166,22 +163,28 @@ export default function AdminPage() {
                 {rsvps.map((rsvp) => (
                   <tr key={rsvp.id}>
                     <td>{rsvp.name}</td>
-                    <td>{rsvp.email}</td>
                     <td>
                       <span
                         className={`${styles.status} ${styles[rsvp.attending]}`}
                       >
-                        {rsvp.attending === "yes"
-                          ? "✓ Attending"
-                          : "✗ Declined"}
+                        {rsvp.attending === "yes" ? "Attending" : "Declined"}
                       </span>
                     </td>
                     <td>{rsvp.guests}</td>
-                    <td>{rsvp.dietary || "-"}</td>
+                    <td>{rsvp.message || "-"}</td>
                     <td>
                       {rsvp.timestamp
                         ? new Date(rsvp.timestamp).toLocaleDateString()
                         : "-"}
+                      {rsvp.updated && (
+                        <>
+                          <br />
+                          <small>
+                            Updated:{" "}
+                            {new Date(rsvp.updated).toLocaleDateString()}
+                          </small>
+                        </>
+                      )}
                     </td>
                   </tr>
                 ))}

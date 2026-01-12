@@ -55,11 +55,43 @@
   color: var(--text-color);
   font-size: 1.1rem;
   line-height: 1.7;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .detailsCard strong {
   color: var(--primary-color);
   font-weight: 600;
+}
+
+/* Directions Link */
+.directionsLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-top: 8px;
+  padding: 8px 16px;
+  background: rgba(181, 234, 215, 0.1);
+  border: 1px solid var(--accent-color);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  width: fit-content;
+}
+
+.directionsLink:hover {
+  background: var(--accent-color);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(181, 234, 215, 0.3);
+}
+
+.directionsLink:active {
+  transform: translateY(0);
 }
 
 .schedule {

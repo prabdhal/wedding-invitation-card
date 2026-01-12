@@ -2,21 +2,12 @@
 export interface RSVPFormData {
   id?: string;
   name: string;
-  email: string;
-  phone: string;
   attending: "yes" | "no";
   guests: number;
-  dietary: string;
   message: string;
   timestamp?: string;
+  updated?: string; // Add this
   ip?: string;
-}
-
-export interface RSVPResponse {
-  success: boolean;
-  message: string;
-  id?: string;
-  error?: string;
 }
 
 export interface RSVPSummary {
@@ -26,12 +17,19 @@ export interface RSVPSummary {
   totalGuests: number;
 }
 
+export interface RSVPResponse {
+  success: boolean;
+  message: string;
+  id?: string;
+  updated?: boolean;
+  error?: string;
+}
+
 export interface RSVPApiResponse {
   rsvps: RSVPFormData[];
   summary: RSVPSummary;
 }
 
-// Component props
 export interface RSVPFormProps {
   onBack: () => void;
   onSubmitSuccess: () => void;

@@ -2,9 +2,11 @@
   {
     "id": "1768190067568",
     "name": "Manjit Singh",
-    "attending": "yes",
-    "guests": 3,
+    "attending": "no",
+    "guests": 0,
+    "message": "Sorry we are busy",
     "timestamp": "2026-01-12T03:54:27.568Z",
+    "updated": "2026-01-12T05:57:16.864Z",
     "ip": "::1"
   },
   {
@@ -18,17 +20,21 @@
   {
     "id": "1768190640909",
     "name": "Jongpil Seo",
-    "attending": "no",
-    "guests": 1,
+    "attending": "yes",
+    "guests": 8,
+    "message": "Congratulations on your wedding! Congratulations on your wedding! Congratulations on your wedding! WE WISHYOUTHEBESTWEDDINGEVER!!!LOVEXOXOXOXOXOXO dddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďdddďd",
     "timestamp": "2026-01-12T04:04:00.908Z",
+    "updated": "2026-01-12T06:00:53.350Z",
     "ip": "::1"
   },
   {
     "id": "1768190720535",
     "name": "Tejpartap Samra",
     "attending": "yes",
-    "guests": 3,
+    "guests": 1,
+    "message": "",
     "timestamp": "2026-01-12T04:05:20.535Z",
+    "updated": "2026-01-12T06:06:02.503Z",
     "ip": "::1"
   },
   {

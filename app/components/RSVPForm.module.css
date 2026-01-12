@@ -49,8 +49,6 @@
 }
 
 .formGroup label {
-  display: block;
-  margin-bottom: 10px;
   font-weight: 600;
   color: var(--primary-color);
   font-size: 1.1rem;
@@ -68,6 +66,10 @@
   color: var(--text-color);
 }
 
+.formGroup input[type="radio"] {
+  padding: 10px;
+}
+
 .formGroup input:focus,
 .formGroup select:focus {
   outline: none;
@@ -76,10 +78,12 @@
   transform: translateY(-2px);
 }
 
+/* Radio Group - FIXED */
 .radioGroup {
   display: flex;
   gap: 25px;
   flex-wrap: wrap;
+  margin-top: 10px;
 }
 
 .radioLabel {
@@ -103,38 +107,55 @@
   transform: translateY(-2px);
 }
 
-.radioLabel input[type="radio"] {
-  width: 22px;
-  height: 22px;
+/* Styled Radio Input - FIXED */
+.radioInput {
+  width: 24px;
+  height: 24px;
   margin: 0;
-  accent-color: var(--accent-color);
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
 }
 
-.radioCustom {
-  width: 22px;
-  height: 22px;
+/* Custom radio button styling - SIMPLIFIED */
+.radioInput[type="radio"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: white;
   border: 2px solid var(--secondary-color);
   border-radius: 50%;
-  display: inline-block;
+  width: 24px;
+  height: 24px;
   position: relative;
   transition: all 0.3s;
 }
 
-.radioLabel input:checked + .radioCustom {
+.radioInput[type="radio"]:checked {
   border-color: var(--accent-color);
-  background: var(--accent-color);
 }
 
-.radioLabel input:checked + .radioCustom::after {
+.radioInput[type="radio"]:checked::after {
   content: "";
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 10px;
-  height: 10px;
-  background: white;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
+  background-color: var(--accent-color);
+}
+
+.radioInput[type="radio"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(181, 234, 215, 0.3);
+}
+
+.radioText {
+  font-size: 1.1rem;
+  color: var(--text-color);
+  flex: 1;
 }
 
 /* Submit Button */
@@ -203,6 +224,7 @@
 .dropdownWrapper {
   position: relative;
   width: 100%;
+  margin-top: 10px;
 }
 
 .dropdownMenu {
@@ -293,4 +315,163 @@
 
 .dropdownMenu::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
+}
+
+.dropdownSelect {
+  margin-top: 10px;
+}
+
+/* Textarea Styles */
+.textarea {
+  width: 100%;
+  padding: 16px 20px;
+  border: 2px solid var(--secondary-color);
+  border-radius: 12px;
+  font-size: 1.1rem;
+  transition: all 0.3s;
+  background: white;
+  color: var(--text-color);
+  font-family: inherit;
+  resize: vertical;
+  min-height: 120px;
+  margin-top: 10px;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 4px rgba(181, 234, 215, 0.2);
+  transform: translateY(-2px);
+}
+
+.charCounter {
+  text-align: right;
+  font-size: 0.875rem;
+  color: var(--text-color);
+  opacity: 0.7;
+  margin-top: 5px;
+}
+
+/* Add to RSVPForm.module.css */
+
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modalContent {
+  background: linear-gradient(135deg, var(--light-color) 0%, #ffffff 100%);
+  padding: 50px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  animation: slideUp 0.4s ease-out;
+  position: relative;
+}
+
+.modalIcon {
+  font-size: 4rem;
+  margin-bottom: 25px;
+  animation: bounce 1s ease infinite;
+}
+
+.modalTitle {
+  color: var(--primary-color);
+  font-size: 2.2rem;
+  margin-bottom: 20px;
+  font-family: var(--font-playfair), "Playfair Display", serif;
+}
+
+.modalMessage {
+  color: var(--text-color);
+  font-size: 1.2rem;
+  line-height: 1.6;
+  margin-bottom: 35px;
+  opacity: 0.9;
+}
+
+.modalButton {
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+  padding: 16px 40px;
+  font-size: 1.1rem;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  box-shadow: 0 6px 20px rgba(255, 154, 162, 0.3);
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.modalButton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.modalButton:hover::before {
+  left: 100%;
+}
+
+.modalButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(255, 154, 162, 0.4);
+}
+
+/* Modal Animations */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

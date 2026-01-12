@@ -7,7 +7,9 @@ interface RSVPFormData {
   name: string;
   attending: "yes" | "no";
   guests: number;
+  message: string;
   timestamp?: string;
+  updated?: string; // Add this field
   ip?: string;
 }
 
@@ -73,23 +75,43 @@ export async function POST(request: NextRequest) {
     const existingData = fs.readFileSync(DATA_FILE, "utf8");
     const rsvps: RSVPFormData[] = JSON.parse(existingData);
 
-    // Add new RSVP with ID
+    // Check if RSVP already exists for this name
+    const existingIndex = rsvps.findIndex(
+      (rsvp) => rsvp.name.toLowerCase() === body.name.toLowerCase().trim()
+    );
+
     const newRsvp: RSVPFormData = {
-      id: Date.now().toString(),
-      ...body,
-      timestamp,
-      ip,
+      id:
+        existingIndex !== -1 ? rsvps[existingIndex].id : Date.now().toString(),
+      name: body.name.trim(),
+      attending: body.attending,
+      guests: body.attending === "yes" ? body.guests || 1 : 0,
+      message: body.message?.trim() || "",
+      timestamp:
+        existingIndex !== -1 ? rsvps[existingIndex].timestamp : timestamp,
+      updated: timestamp, // Now this is allowed
+      ip: existingIndex !== -1 ? rsvps[existingIndex].ip : ip,
     };
 
-    rsvps.push(newRsvp);
+    if (existingIndex !== -1) {
+      // Update existing RSVP
+      rsvps[existingIndex] = newRsvp;
+    } else {
+      // Add new RSVP
+      rsvps.push(newRsvp);
+    }
 
     // Save to file
     fs.writeFileSync(DATA_FILE, JSON.stringify(rsvps, null, 2));
 
     return NextResponse.json({
       success: true,
-      message: "RSVP saved successfully",
+      message:
+        existingIndex !== -1
+          ? "RSVP updated successfully"
+          : "RSVP saved successfully",
       id: newRsvp.id,
+      updated: existingIndex !== -1,
     });
   } catch (error) {
     console.error("Error saving RSVP:", error);
